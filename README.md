@@ -1,4 +1,4 @@
-![screenshot](config.png)
+![example simulation](config.gif)
 
 # Celadro_3D: Cells as active droplets
 

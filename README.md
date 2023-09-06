@@ -1,28 +1,11 @@
-![screenshot](cells.png)
+![screenshot](config.png)
 
-# Celadro: Cells as active droplets
+# Celadro_3D: Cells as active droplets
 
-Phase-field modelling of epithelial cells using finite-difference integrator.<br/>
-[Example movie 1](assets/movie1.mp4?raw=true) [Example movie 2](assets/movie2.mp4?raw=true)
+Three-dimensional phase-field modelling of epithelial cells using finite-difference integrator. 
 
-## Publications
+## Building 
 
-This code has served as a basis for the simulations included in the following papers:
-
-- Active Inter-cellular Forces in Collective Cell Motility  
-  G Zhang, R Mueller, A Doostmohammadi, JM Yeomans  
-  arXiv preprint arXiv:2005.13087, 2020
-- Emergence of active nematic behavior in monolayers of isotropic cells  
-  R Mueller, JM Yeomans, A Doostmohammadi  
-  Physical review letters 122 (4), 048004  
-  [Movie 1](https://arxiv.org/src/1811.05040v2/anc/movie_1.mp4) [Movie 1](https://arxiv.org/src/1811.05040v2/anc/movie_2.mp4)
-- Sustained oscillations of epithelial cell sheets  
-  G Peyret, R Mueller, J d'Alessandro, et al.  
-  Biophysical journal 117 (3), 464-478
-
-## Building
-
-We use cmake. Typically you would type:
 ```
 mkdir build
 cd build
@@ -32,7 +15,7 @@ make
 
 We rely on the `boost::program_options` which must be installed prior to
 building the program. We also use modern C++ features, such that you will
-require a modern compiler (tested with g++-4.9).
+require a modern compiler.
 
 ## Running
 
@@ -42,7 +25,7 @@ first argument:
 `./celadro runcard.dat [options]`
 
 A runcard is a simple file providing the parameters for the run. Example
-runcards can be found in the `example/` directory. Every option can also be
+runcards can be found in the `simulation_examples/` directory. Every option can also be
 given to the program using the command line as `./celadro runcard.dat --option=arg`.
 A complete list of available options can be obtained by typing `./celadro -h`.
 
@@ -55,18 +38,25 @@ Type `./celadro -h` for a list of available options.
 
 ## Examples
 
-Examples runs and ploting scripts can be found in the `example` directory. Try
-to run `bash make_all_movies.sh` and have a look at the results.
+Examples runs and ploting scripts can be found in the `simulation_examples` directory. 
 
-## Multi-threading and CUDA
+## Visualization
 
-WARNING !!! this feature is currently unmaintained and can not be used for now (2020) !!!
+VTK library is needed for visualization. Go to `VTK_VolRender/vtk_VolRender_01012021.cpp` to change camera position. The code can be compile with: 
 
-The code supports both multi-threading and CUDA. The CUDA-enabled version of
-the code can be built using
 ```
-mkdir build-cuda
-cd build-cuda
-cmake ..
-make celadro-cuda
+cmake .
+make 
 ```
+You also need to create a .vtk file from .json. This can be done with the following python code: 
+
+```
+/scripts/write_vtk_from_JSON_03012021.py 
+```
+
+you can run it by simply change what frame(s) to use for creating .vtk file(s). Then simply write: 
+
+```
+python write_vtk_from_JSON_03012021.py [output directory containing .json files]
+```
+

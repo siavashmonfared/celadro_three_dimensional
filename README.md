@@ -19,44 +19,29 @@ require a modern compiler.
 
 ## Running
 
-The code is run from the command line and a runcard must always be given as the
-first argument:
+The code is run from the command line and a simCard must always be given as the
+first argument, from directory `example/`:
 
-`./celadro runcard.dat [options]`
+`../build/celadro simCard.dat [options]`
 
-A runcard is a simple file providing the parameters for the run. Example
-runcards can be found in the `simulation_examples/` directory. Every option can also be
-given to the program using the command line as `./celadro runcard.dat --option=arg`.
-A complete list of available options can be obtained by typing `./celadro -h`.
+A simCard.dat is a simple file providing the parameters for the run. Example
+simCard can be found in the `example` directory. Every option can also be
+given to the program using the command line as `../build/celadro simCard.dat --option=arg`.
+A complete list of available options can be obtained by typing `../celadro -h`.
 
 By default the program writes output files in the current directory. This can be
 changed using `--output=dir/` or `-o dir/`, where `dir/` is the target
 directory. The program also supports compressed (using zip) output with the option
-flag `--compression` or `-c`. Typical usage is `./celadro runcard.dat -fco output/`
+flag `-compress-full`. Typical usage is `../buil/celadro -compress-full simCard.dat`
 
-Type `./celadro -h` for a list of available options.
+Type `../build/celadro -h` for a list of available options.
 
 ## Examples
 
-Examples runs and ploting scripts can be found in the `simulation_examples` directory. 
+Examples runs and ploting scripts can be found in the `example` directory. 
 
 ## Visualization
 
-VTK library is needed for visualization. Go to `VTK_VolRender/vtk_VolRender_01012021.cpp` to change camera position. The code can be compile with: 
+VTK library is needed for visualization. A code is provided in `example/vtk_VolRender_05012021.py`. You can view the .vtk files using paraview or by running `example/vtk_VolRender_05012021.py`.
 
-```
-cmake .
-make 
-```
-You also need to create a .vtk file from .json. This can be done with the following python code: 
-
-```
-/scripts/write_vtk_from_JSON_03012021.py 
-```
-
-you can run it by simply change what frame(s) to use for creating .vtk file(s). Then simply write: 
-
-```
-python write_vtk_from_JSON_03012021.py [output directory containing .json files]
-```
 

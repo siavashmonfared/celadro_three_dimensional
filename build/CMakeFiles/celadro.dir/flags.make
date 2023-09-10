@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -DBOOST_ALL_NO_LIB -DBOOST_PROGRAM_OPTIONS_DYN_LINK
 
-CXX_INCLUDES = -I/home/siavash/Documents/research/cell_mechanics/phase_field_3D/celadro_master_open_source/src
+CXX_INCLUDES = -I/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src
 
 CXX_FLAGS =  -Wall -Wno-long-long -O3 -DNDEBUG  -Wall -Wno-long-long -fopenmp -std=gnu++14
 

@@ -1,4 +1,4 @@
-# Install script for directory: /home/siavash/Documents/research/cell_mechanics/phase_field_3D/celadro_master_open_source/src
+# Install script for directory: /home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

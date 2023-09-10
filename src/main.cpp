@@ -43,11 +43,11 @@ void Model::Algorithm()
       try
       {
         WriteFrame(t);
-		Write_COM(t);
-		Write_velocities(t);  
-		Write_forces(t);  	
-  		Write_contArea(t);
-  		Write_Density(t);
+		//Write_COM(t);
+		//Write_velocities(t);  
+		//Write_forces(t);  	
+  		//Write_contArea(t);
+  		//Write_Density(t);
 
       }
       catch(...) {
@@ -100,11 +100,11 @@ void Model::Algorithm()
 
   // finally write final frame
   if(!no_write and nsteps>=nstart) WriteFrame(nsteps);
-  if(!no_write and nsteps>=nstart) Write_COM(nsteps);	
-  if(!no_write and nsteps>=nstart) Write_velocities(nsteps);	
-  if(!no_write and nsteps>=nstart) Write_forces(nsteps);
-  if(!no_write and nsteps>=nstart) Write_contArea(nsteps);
-  if(!no_write and nsteps>=nstart) Write_Density(nsteps);
+  // if(!no_write and nsteps>=nstart) Write_COM(nsteps);	
+  // if(!no_write and nsteps>=nstart) Write_velocities(nsteps);	
+  // if(!no_write and nsteps>=nstart) Write_forces(nsteps);
+  // if(!no_write and nsteps>=nstart) Write_contArea(nsteps);
+  // if(!no_write and nsteps>=nstart) Write_Density(nsteps);
 	
 
 }

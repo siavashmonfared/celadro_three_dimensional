@@ -66,7 +66,7 @@ void Model::PreRunStats()
       vol += 1.-walls[k];
       packing /= vol;
 
-    cout << "Packing fraction = " << packing << endl;
+   //  cout << "Packing fraction = " << packing << endl;
   }
 }
 
@@ -119,17 +119,11 @@ void Model::UpdateSumsAtNode(unsigned n, unsigned q)
   sumS11[k]  += p*S11[n];
   sumS22[k]  += p*S22[n];
   
-  //sumQ00[k]  += p*Q00[n];
-  //sumQ01[k]  += p*Q01[n];
-  sumQ00[k] += 1;
-  sumQ01[k] += 0;
-    //if (walls[k] == 1.){
-    //const double z = GetZPosition(k);
-    //if(z < wall_thickness + 10){
-    //sumQ00[k]  += 1;
-    //sumQ01[k]  += 0;
-    //}
-  
+  sumQ00[k]  += p*Q00[n];
+  sumQ01[k]  += p*Q01[n];
+  //sumQ00[k] += 1;
+  //sumQ01[k] += 0;
+
   P0[k]      += p*polarization[n][0];
   P1[k]      += p*polarization[n][1];
   P2[k]      += p*polarization[n][2];
@@ -152,27 +146,6 @@ double Model::SubAdhesion_field(double x, double y){
   
   if (x < Size[0]/2) spatial_wall_omega = 0.0017;
   if (x >= Size[0]/2) spatial_wall_omega = 0.0027;
-  
-   /*
-   vector<double> sbins;
-   vector<double> svals;
-   sbins.resize(sqrt(nphases)+1);
-   svals.resize(sqrt(nphases)+1);
-   const auto sL = Size[0] / sqrt(nphases);
-   for (unsigned k = 0 ; k < (sqrt(nphases)+1) ; k++) sbins[k] = 1.*k * sL;
-   for (unsigned k = 0 ; k < (sqrt(nphases)+1) ; k++){     
-   if (k%2 == 0){
-   svals[k] = 0.0010;
-   }
-   else{
-   svals[k] = 0.0025;
-   }
-   }
-    
-   for (unsigned k = 0 ; k < (sqrt(nphases)+1) ; k++){
-    if (x >= sbins[k] && x < sbins[k+1]) spatial_wall_omega = svals[k]; 
-   }
-   */
     
   }
   
@@ -266,15 +239,6 @@ void Model::UpdateForcesAtNode(unsigned n, unsigned q)
   const auto dxs = derivX(sum, s);
   const auto dys = derivY(sum, s);
   const auto dzs = derivZ(sum, s);
-
-
-  stress_xx[k] = - pressure[k] - zetaS_field[n]*sumS00[k] - zetaQ_field[n]*sumQ00[k] ;
-  stress_yy[k] = - pressure[k] - zetaS_field[n]*sumS11[k] ;
-  stress_zz[k] = - pressure[k] - zetaS_field[n]*sumS22[k] ;
-  
-  stress_xy[k] = - zetaS_field[n]*sumS01[k] - zetaQ_field[n]*sumQ01[k];
-  stress_xz[k] = - zetaS_field[n]*sumS02[k] ;
-  // stress_yz[k] = - zetaS*sumS12[k] ;
   
   Fpressure[n] += { pressure[k]*dx, pressure[k]*dy, pressure[k]*dz };
   
@@ -282,14 +246,10 @@ void Model::UpdateForcesAtNode(unsigned n, unsigned q)
                     zetaS_field[n]*sumS01[k]*dx + zetaS_field[n]*sumS11[k]*dy + zetaS_field[n]*sumS12[k]*dz,
                     zetaS_field[n]*sumS02[k]*dx + zetaS_field[n]*sumS12[k]*dy + zetaS_field[n]*sumS22[k]*dz };
                     
-  //Fnem[n]      += { zetaQ_field[n]*sumQ00[k]*dx + zetaQ_field[n]*sumQ01[k]*dz, 
-   //                 zetaQ_field[n]*sumQ00[k]*dy + zetaQ_field[n]*sumQ01[k]*dz,
-   //                 zetaQ_field[n]*sumQ01[k]*dx - zetaQ_field[n]*sumQ00[k]*dz }; 
+  Fnem[n]      += { zetaQ_field[n]*sumQ00[k]*dx + zetaQ_field[n]*sumQ01[k]*dz, 
+                   zetaQ_field[n]*sumQ00[k]*dy + zetaQ_field[n]*sumQ01[k]*dz,
+                   zetaQ_field[n]*sumQ01[k]*dx - zetaQ_field[n]*sumQ00[k]*dz }; 
                     
-  Fnem[n]  	 += { walls[k]*zetaQ_field[n]*sumQ00[k]*dx + walls[k]*zetaQ_field[n]*sumQ01[k]*dy , 	      
-  		      walls[k]*zetaQ_field[n]*sumQ01[k]*dx - walls[k]*zetaQ_field[n]*sumQ00[k]*dy , 
-  		     -(0.5)*walls[k]*zetaQ_field[n]*dz };            
-    
   // store derivatives
   phi_dx[n][q] = dx;
   phi_dy[n][q] = dy;
@@ -297,8 +257,7 @@ void Model::UpdateForcesAtNode(unsigned n, unsigned q)
 
   // nematic torques
   tau[n]       += phi[n][q] * (sumQ00[k]*Q01[n] - sumQ01[k]*Q00[n]);
-  // tau[n]       += (sumQ00[k]*Q01[n] - sumQ01[k]*Q00[n]); 
-  // vorticity[n] += U0[k]*dy - U1[k]*dx;
+
   vorticity[n] -= { U2[k]*dy-U1[k]*dz, U0[k]*dz-U2[k]*dx, U2[k]*dx-U0[k]*dy };//got to check the sign
   
   // polarisation torques (not super nice)
@@ -474,15 +433,6 @@ void Model::UpdateStructureTensorAtNode(unsigned n, unsigned q)
   const auto  dy = phi_dy[n][q];
   const auto  dz = phi_dz[n][q];
   const auto  p  = phi[n][q];
-
-  /*
-  S00[n] += -dx*dx;
-  S01[n] += -dx*dy;
-  S02[n] += -dx*dz;
-  S12[n] += -dy*dz;
-  S11[n] += -dy*dy;
-  S22[n] += -dz*dz;
-  */
 
   S00[n] += -(dx*dx - (1./3.)*(dx*dx+dy*dy+dz*dz));
   S01[n] += -dx*dy;

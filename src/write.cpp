@@ -186,6 +186,7 @@ void Model::Write_visData(unsigned t){
         }
     }
     
+    /*
     fprintf(sortie, "VECTORS StressDiag float\n");
     ik = 0;
     for (size_t z = 0 ; z < Size[2] ; z++) {
@@ -196,6 +197,7 @@ void Model::Write_visData(unsigned t){
             }
         }
     }
+    */
     
     fclose(sortie);
      

@@ -102,7 +102,7 @@ void Model::AddCellMix(unsigned n, const coord& center, double zetaSi, double ze
   xis[n] = xii;
   cellTypes[n] = cellType;
   
-  cout<<n<<" "<<gams[n]<<" "<<zetaS_field[n]<<" "<<zetaQ_field[n]<<" "<<omega_ccs[n]<<" "<<omega_cws[n]<<" "<<kappas[n]<<" "<<mus[n]<<" "<<Rs[n]<<" "<<V0[n]<<" "<<alphas[n]<<" "<<xis[n]<<endl;
+ //  cout<<n<<" "<<gams[n]<<" "<<zetaS_field[n]<<" "<<zetaQ_field[n]<<" "<<omega_ccs[n]<<" "<<omega_cws[n]<<" "<<kappas[n]<<" "<<mus[n]<<" "<<Rs[n]<<" "<<V0[n]<<" "<<alphas[n]<<" "<<xis[n]<<endl;
 
 
 }

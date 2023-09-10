@@ -1,4 +1,4 @@
-# Install script for directory: /home/siavash/Documents/research/cell_mechanics/phase_field_3D/celadro_master_open_source
+# Install script for directory: /home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -44,7 +44,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/siavash/Documents/research/cell_mechanics/phase_field_3D/celadro_master_open_source/build/src/cmake_install.cmake")
+  include("/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/build/src/cmake_install.cmake")
 
 endif()
 
@@ -56,5 +56,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/siavash/Documents/research/cell_mechanics/phase_field_3D/celadro_master_open_source/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

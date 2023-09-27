@@ -1,5 +1,5 @@
 /*
- * This file is part of CELADRO, Copyright (C) 2016-17, Romain Mueller
+ * This file is part of CELADRO_3D, Copyright (C) 2019-2021, Siavash Monfared
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,35 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/** Small json serialization library.
-  *
-  * Minimal json library for arbitrary types. It goes together with the python
-  * file archive.py that allows to import automatically the data dumped using
-  * this library.
-  *
-  * Usage is similar to boost::serialization, but the API is minimal. The
-  * implementation is also inspired from this library. The main choice is to
-  * avoid RTI and use templates. This is more efficient, but comes with a lot
-  * of difficulties because template functions can not be virtual in C++. Hence
-  * we have to resort to dirty template tricks (and admit it you like dirty
-  * tricks). This is a very good opportunity to write code that is: (i) overly
-  * complicated and (ii) unmaintainable by any standard.
-  *
-  * Remark: We can not deduce names automatically because these are
-  * implementation defined (even through <typeinfo>). This would mean that an
-  * output file produced on a computer might not be usable on another, which
-  * is uncool.
-  *
-  * TODO:
-  * * Declare string types
-  * * InputArchive
-  *
-  * Be careful, part of this code is serious C++.
-  *
-  * Romain Mueller, name dot surname at gmail dot com
-  */
-
+ 
 #ifndef SERIALIZATION_HPP_
 #define SERIALIZATION_HPP_
 

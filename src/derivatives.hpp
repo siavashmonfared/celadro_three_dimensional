@@ -1,5 +1,5 @@
 /*
- * This file is part of CELADRO, Copyright (C) 2016-17, Romain Mueller
+ * This file is part of CELADRO_3D, Copyright (C) 2019-2021, Siavash Monfared
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,40 +53,5 @@ inline double laplacian(const field& f, const stencil& s)
    return f[s[+1][0][0]] + f[s[0][+1][0]] + f[s[-1][0][0]] + f[s[0][-1][0]] + f[s[0][0][+1]] + f[s[0][0][-1]] - 6.*f[s[0][0][0]];
 }
 
-/** Symmetric finite difference derivative along the x direction (arrays) */
-CUDA_host_device
-inline double derivX(double *f, const stencil& s)
-{
-  // return .5*( f[s[+1][0]] - f[s[-1][0]] );
-  return .5*( f[s[+1][0][0]] - f[s[-1][0][0]] );
-}
-
-/** Symmetric finite difference derivative along the y direction (arrays) */
-CUDA_host_device
-inline double derivY(double *f, const stencil& s)
-{
-  // return .5*( f[s[0][+1]] - f[s[0][-1]] );
-  return .5*( f[s[0][+1][0]] - f[s[0][-1][0]] );  
-}
-
-
-/** Symmetric finite difference derivative along the y direction (arrays) */
-
-CUDA_host_device
-inline double derivZ(double *f, const stencil& s)
-{
-  //  return .5*( f[s[0][+1]] - f[s[0][-1]] );
-  return .5*( f[s[0][0][+1]] - f[s[0][0][-1]] );   
-}
-
-
-/** Five-point finite difference laplacian (arrays) */
-CUDA_host_device
-inline double laplacian(double *f, const stencil& s)
-{
- // return f[s[+1][0]] + f[s[0][+1]] + f[s[-1][0]] + f[s[0][-1]] - 4.*f[s[0][0]];
-   return f[s[+1][0][0]] + f[s[0][+1][0]] + f[s[-1][0][0]] + f[s[0][-1][0]] + f[s[0][0][+1]] + f[s[0][0][-1]] - 6.*f[s[0][0][0]];
- 
-}
 
 #endif//DERIVATIVES_HPP_

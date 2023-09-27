@@ -6,11 +6,19 @@
 
 #IncludeRegexTransform: 
 
-/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/cuda.h
+/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/configure.cpp
+header.hpp
+/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/header.hpp
+model.hpp
+/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/model.hpp
+derivatives.hpp
+/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/derivatives.hpp
+
+/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/derivatives.hpp
+stencil.hpp
+/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/stencil.hpp
 
 /home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/error_msg.hpp
-
-/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/files.hpp
 
 /home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/header.hpp
 iostream
@@ -49,18 +57,6 @@ type_traits
 -
 chrono
 -
-cuda.h
-/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/cuda.h
-cuComplex.h
--
-curand.h
--
-curand_kernel.h
--
-vec_cuda.h
-/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/vec_cuda.h
-vec.hpp
-/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/vec.hpp
 error_msg.hpp
 /home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/error_msg.hpp
 threads.hpp
@@ -81,6 +77,16 @@ stencil.hpp
 /home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/stencil.hpp
 serialization.hpp
 /home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/serialization.hpp
+
+/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/run.cpp
+header.hpp
+/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/header.hpp
+model.hpp
+/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/model.hpp
+derivatives.hpp
+/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/derivatives.hpp
+tools.hpp
+/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/tools.hpp
 
 /home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/serialization.hpp
 
@@ -107,18 +113,4 @@ array
 -
 iostream
 -
-
-/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/vec_cuda.h
-array
--
-iostream
--
-
-/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/write.cpp
-header.hpp
-/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/header.hpp
-model.hpp
-/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/model.hpp
-files.hpp
-/home/siavash/Documents/research/cell_mechanics/phase_field_3D/git_celadro_three_dimensional_public/src/files.hpp
 

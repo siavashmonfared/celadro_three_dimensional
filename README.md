@@ -27,18 +27,31 @@ As an exampke, from directory `example` execute:
 The `simCard.dat` specifies simulation details such as number of time steps, boundary conditions. The `input_str.dat` contains initial positions for cells and physical properties for each cell. The format is: 
 
 `1st column: cell type`
+
 `2nd column: initial x coordinate`
+
 `3rd column: initial y coordinate`
+
 `4th column: initial z coordinate`
+
 `5th column: shape activity strength (\zeta_S)`
+
 `6th column: nematic activity strength (\zeta_Q)`
+
 `7th column: cell stiffness (\gamma)`
+
 `8th column: cell-cell adhesion strength (\omega_cc)`
+
 `9th column: cell-cell repulsion strength (\kappa_cc)`
+
 `10th column: cell compressiblity (\mu)`
+
 `11th column: initial cell radius`
+
 `12th column: cell-substrate adhesion strength (\omega_cw)`
+
 `13th column: polar activity strength (\alpha)`
+
 `14th column: cell-substrate friction (\xi)`
 
 Examples can be found in the `example` directory. Every option can also be
@@ -68,7 +81,7 @@ The relevant publications are:
 ```
 Monfared et al. eLife 2023;12:e82435. DOI: https://doi.org/10.7554/eLife.82435
 Monfared et al. arXiv:2210.08112 [cond-mat.soft]. DOI: https://doi.org/10.48550/arXiv.2210.08112
-
+Mueller et al., PRL 122, 048004. DOI: https://doi.org/10.1103/PhysRevLett.122.048004
 ```
 
 

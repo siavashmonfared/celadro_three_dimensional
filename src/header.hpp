@@ -1,5 +1,5 @@
 /*
- * This file is part of CELADRO_3D, Copyright (C) 2019-2021, Siavash Monfared
+ * This file is part of CELADRO, Copyright (C) 2016-17, Romain Mueller
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,17 @@
 #include <type_traits>
 #include <chrono>
 
+#include "cuda.h"
+#ifdef _CUDA_ENABLED
+#include <cuComplex.h>
+#include <curand.h>
+#include <curand_kernel.h>
+#ifdef _CUDA
+#include "vec_cuda.h"
+#else
+#include "vec.hpp"
+#endif
+#endif
 #include "error_msg.hpp"
 #include "threads.hpp"
 #include "tools.hpp"

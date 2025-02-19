@@ -1,20 +1,4 @@
-/*
- * This file is part of CELADRO_3D, Copyright (C) 2019-2021, Siavash Monfared
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
- 
+
 #include "header.hpp"
 #include "model.hpp"
 
@@ -93,7 +77,7 @@ void Model::ParseProgramOptions(int ac, char **av)
       "Energy penalty for vol of each phase (array)")
     ("lambda", opt::value<double>(&lambda),
       "Interface thickness parameter")
-    ("kappa", opt::value<double>(&kappa),
+    ("kappa_cc", opt::value<double>(&kappa_cc),
       "Interaction strength")
     ("npc", opt::value<unsigned>(&npc)->default_value(1u),
       "Number of predictor-corrector steps")
@@ -105,8 +89,6 @@ void Model::ParseProgramOptions(int ac, char **av)
     //  "Cell-wall friction parameter")
     ("xi", opt::value<double>(&xi),
       "Substrate friction parameter")
-    ("kij", opt::value<double>(&kij),
-      "repulsion between dissimilar cell types")
     ("K-pol", opt::value<double>(&Kpol),
      "elastic constant for the polarisation")
     ("K-nem", opt::value<double>(&Knem),
@@ -133,13 +115,13 @@ void Model::ParseProgramOptions(int ac, char **av)
      "Activity from internal nematic tensor")
     ("zetaS", opt::value<double>(&zetaS),
      "Activity from shape")
-    ("omega", opt::value<double>(&omega),
+    ("omega_cc", opt::value<double>(&omega_cc),
       "Adhesion parameter")
     ("wall-thickness", opt::value<double>(&wall_thickness),
       "Wall thickness (typical decay length)")
-    ("wall-kappa", opt::value<double>(&wall_kappa)->default_value(kappa),
+    ("kappa_cs", opt::value<double>(&kappa_cs)->default_value(kappa_cc),
       "Wall repulsion")
-    ("wall-omega", opt::value<double>(&wall_omega)->default_value(0.),
+    ("omega_cs", opt::value<double>(&omega_cs)->default_value(0.),
       "Wall adhesion")
     ("R", opt::value<double>(&R),
       "Preferred radius (defines volume (4/3)*Pi*R*R*R)")
@@ -152,8 +134,6 @@ void Model::ParseProgramOptions(int ac, char **av)
   opt::options_description init("Initial configuration options");
   init.add_options()
     ("config", opt::value<string>(&init_config),
-      "Initial configuration")
-    ("substrate-adhesion", opt::value<string>(&sub_adh),
       "Initial configuration")
     ("relax-time", opt::value<unsigned>(&relax_time)->default_value(0u),
       "Relaxation time steps at initialization.")

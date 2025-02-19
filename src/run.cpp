@@ -24,9 +24,8 @@ void Model::Pre()
 
     if(relax_nsubsteps) swap(nsubsteps, relax_nsubsteps);
 
-    int count = 0;
     for(unsigned i=0; i<relax_time*nsubsteps; ++i)
-      for(unsigned i=0; i<=npc; ++i) Update(i==0);
+      for(unsigned j=0; j<=npc; ++j) Update(j==0);
 
     if(relax_nsubsteps) swap(nsubsteps, relax_nsubsteps);
 
@@ -51,54 +50,13 @@ void Model::Post()
 {}
 
 void Model::PreRunStats()
-{
-  // packing fraction
-  {
-
-    double packing = 0.;
-    for(unsigned n=0; n<nphases; ++n)
-      packing += Rs[n]*Rs[n]*Rs[n];
-      packing *= Pi;
-      packing *= (4./3);
-
-    double vol = 0;
-    for(unsigned k=0; k<N; ++k)
-      vol += 1.-walls[k];
-      packing /= vol;
-
-   //  cout << "Packing fraction = " << packing << endl;
-  }
-}
+{}
 
 void Model::RuntimeStats()
-{
-  // TBD
-}
+{}
 
 void Model::RuntimeChecks()
-{
-  // check that the vol is more or less conserved (20%)
-  for(unsigned n=0; n<nphases; ++n)
-     if(abs(1.-vol[n]/( (4./3.)*Pi*R*R*R) )>.2) 
-      throw warning_msg("vol is not conserved.");
-
-  for(unsigned n=0; n<nphases; ++n)
-  {
-    // check that the cells are not leaking, i.e. that at least 90% of the
-    // contributions to the vol comes from inside the cell (>1/2).
-    double a = 0.;
-    // compute vol of points outside the cell (<1/2)
-    for(const auto v : phi[n]) if(v<.5) a += v*v;
-    // check that it is less than 5%
-    if(a/vol[n]>.90)
-      throw warning_msg("your cells are leaking!");
-
-    // check that the phase fields stay between 0 and 1
-    for(const auto& p : phi[n])
-      if(p<-0.5 or p>1.5)
-        throw warning_msg("phase-field is not in [0,1]!");
-  }
-}
+{}
 
 void Model::UpdateSumsAtNode(unsigned n, unsigned q)
 {
@@ -107,10 +65,6 @@ void Model::UpdateSumsAtNode(unsigned n, unsigned q)
 
   sum[k]     += p;
   square[k]  += p*p;
-  thirdp[k]  += p*p*p;
-  fourthp[k] += p*p*p*p;
-  
-  cIds[k] = n;
   
   sumS00[k]  += p*S00[n];
   sumS01[k]  += p*S01[n];
@@ -119,11 +73,17 @@ void Model::UpdateSumsAtNode(unsigned n, unsigned q)
   sumS11[k]  += p*S11[n];
   sumS22[k]  += p*S22[n];
   
-  sumQ00[k]  += p*Q00[n];
-  sumQ01[k]  += p*Q01[n];
-  //sumQ00[k] += 1;
-  //sumQ01[k] += 0;
-
+  //sumQ00[k]  += p*Q00[n];
+  //sumQ01[k]  += p*Q01[n];
+  sumQ00[k] += 1;
+  sumQ01[k] += 0;
+    //if (walls[k] == 1.){
+    //const double z = GetZPosition(k);
+    //if(z < wall_thickness + 10){
+    //sumQ00[k]  += 1;
+    //sumQ01[k]  += 0;
+    //}
+  
   P0[k]      += p*polarization[n][0];
   P1[k]      += p*polarization[n][1];
   P2[k]      += p*polarization[n][2];
@@ -135,33 +95,7 @@ void Model::UpdateSumsAtNode(unsigned n, unsigned q)
 
 
 
-double Model::SubAdhesion_field(double x, double y){
-  double spatial_wall_omega = wall_omega;
-  if(sub_adh=="const"){
-  spatial_wall_omega = wall_omega;
-  }
-  
-  
-  if(sub_adh=="strips"){
-  
-  if (x < Size[0]/2) spatial_wall_omega = 0.0017;
-  if (x >= Size[0]/2) spatial_wall_omega = 0.0027;
-    
-  }
-  
-  if(sub_adh=="circle"){
-    double rad = 4.*R;
-   if ( (x-Size[0]/2)*(x-Size[0]/2)+(y-Size[1]/2)*(y-Size[1]/2) <= (rad*rad)  ){
-     spatial_wall_omega = 0.0010;
-   }
-    else{
-     spatial_wall_omega = 0.0025;
-    }
-    
-  }
-  
-  return spatial_wall_omega;
-}
+
 
 
 
@@ -175,35 +109,25 @@ void Model::UpdatePotAtNode(unsigned n, unsigned q)
   const auto ll = laplacian(phi[n], sq);
   const auto ls = laplacian(sum, s);
 
-  const double x = GetXPosition(k);
-  const double y = GetYPosition(k);
-
   const double internal = (
       // CH term
-      + gams[n]*(8*p*(1-p)*(1-2*p)/lambda - 2*lambda*ll)
+      + gam*(8*p*(1-p)*(1-2*p)/lambda - 2*lambda*ll)
       // vol conservation term
-      - 4*mus[n]/V0[n]*(1-a/V0[n])*p
+      - 4*mu/V0*(1-a/V0)*p
     );
-
-  if(cellTypes[cIds[k]] == cellTypes[n]){// same cell type 
-  kappa = kappas[n];
-  }
-  else{// different cell type
-  kappa = kij * kappas[n];
-  }
   
   // kappa = kappas[n];
   const double interactions = (
       // repulsion term
       
-      + 2*kappa/lambda*p*(square[k]-p*p)
+      + 2*kappa_cc/lambda*p*(square[k]-p*p)
       // adhesion term
-      - 2*omega_ccs[n]*lambda*(ls-ll)
+      - 2*omega_cc*lambda*(ls-ll)
       // repulsion with walls
-      + 2*wall_kappa/lambda*p*walls[k]*walls[k]
+      + 2*kappa_cs/lambda*p*walls[k]*walls[k]
       // adhesion with walls
       // - 2*SubAdhesion_field(x,y)*lambda*walls_laplace[k]
-      - 2*omega_cws[n]*lambda*walls_laplace[k]
+      - 2*omega_cs*lambda*walls_laplace[k]
 
     );
   
@@ -239,17 +163,17 @@ void Model::UpdateForcesAtNode(unsigned n, unsigned q)
   const auto dxs = derivX(sum, s);
   const auto dys = derivY(sum, s);
   const auto dzs = derivZ(sum, s);
-  
+    
   Fpressure[n] += { pressure[k]*dx, pressure[k]*dy, pressure[k]*dz };
   
-  Fshape[n]    += { zetaS_field[n]*sumS00[k]*dx + zetaS_field[n]*sumS01[k]*dy + zetaS_field[n]*sumS02[k]*dz,
-                    zetaS_field[n]*sumS01[k]*dx + zetaS_field[n]*sumS11[k]*dy + zetaS_field[n]*sumS12[k]*dz,
-                    zetaS_field[n]*sumS02[k]*dx + zetaS_field[n]*sumS12[k]*dy + zetaS_field[n]*sumS22[k]*dz };
+  Fshape[n]    += { zetaS*sumS00[k]*dx + zetaS*sumS01[k]*dy + zetaS*sumS02[k]*dz,
+                    zetaS*sumS01[k]*dx + zetaS*sumS11[k]*dy + zetaS*sumS12[k]*dz,
+                    zetaS*sumS02[k]*dx + zetaS*sumS12[k]*dy + zetaS*sumS22[k]*dz };
                     
-  Fnem[n]      += { zetaQ_field[n]*sumQ00[k]*dx + zetaQ_field[n]*sumQ01[k]*dz, 
-                   zetaQ_field[n]*sumQ00[k]*dy + zetaQ_field[n]*sumQ01[k]*dz,
-                   zetaQ_field[n]*sumQ01[k]*dx - zetaQ_field[n]*sumQ00[k]*dz }; 
-                    
+  Fnem[n]  	 += { walls[k]*zetaQ*sumQ00[k]*dx + walls[k]*zetaQ*sumQ01[k]*dy , 	      
+  		      walls[k]*zetaQ*sumQ01[k]*dx- walls[k]*zetaQ*sumQ00[k]*dy, 
+  		     -(0.5)*walls[k]*zetaQ*dz };  
+  		     
   // store derivatives
   phi_dx[n][q] = dx;
   phi_dy[n][q] = dy;
@@ -257,7 +181,6 @@ void Model::UpdateForcesAtNode(unsigned n, unsigned q)
 
   // nematic torques
   tau[n]       += phi[n][q] * (sumQ00[k]*Q01[n] - sumQ01[k]*Q00[n]);
-
   vorticity[n] -= { U2[k]*dy-U1[k]*dz, U0[k]*dz-U2[k]*dx, U2[k]*dx-U0[k]*dy };//got to check the sign
   
   // polarisation torques (not super nice)
@@ -432,7 +355,6 @@ void Model::UpdateStructureTensorAtNode(unsigned n, unsigned q)
   const auto  dx = phi_dx[n][q];
   const auto  dy = phi_dy[n][q];
   const auto  dz = phi_dz[n][q];
-  const auto  p  = phi[n][q];
 
   S00[n] += -(dx*dx - (1./3.)*(dx*dx+dy*dy+dz*dz));
   S01[n] += -dx*dy;
@@ -449,9 +371,6 @@ void Model::ReinitSumsAtNode(unsigned k)
 {
   sum[k] = 0;
   square[k] = 0;
-  thirdp[k] = 0;
-  fourthp[k] = 0;
-  cIds[k] = 0;
 
   sumS00[k] = 0;
   sumS01[k] = 0;
@@ -508,8 +427,8 @@ void Model::Update(bool store, unsigned nstart)
 
     // normalise and compute total forces and vel
     tau[n]     /= lambda;
-    Fpol[n]     = alphas[n]*polarization[n];
-    velocity[n] = ( Fpressure[n] + Fnem[n] + Fshape[n] + Fpol[n] )/xis[n];
+    Fpol[n]     = alpha*polarization[n];
+    velocity[n] = ( Fpressure[n] + Fnem[n] + Fshape[n] + Fpol[n] )/xi;
   }
   
   // Predictor-corrector function for updating the phase fields

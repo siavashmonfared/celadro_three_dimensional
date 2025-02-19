@@ -1,20 +1,4 @@
-/*
- * This file is part of CELADRO_3D, Copyright (C) 2019-2021, Siavash Monfared
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
- 
+
 #include "header.hpp"
 #include "model.hpp"
 
@@ -62,13 +46,8 @@ void Model::Initialize()
   sumS22.resize(N, 0.);
   
   sumQ00.resize(N, 0.);
-  sumQ01.resize(N, 0.);
-  
+  sumQ01.resize(N, 0.);  
   square.resize(N, 0.);
-  thirdp.resize(N, 0.);
-  fourthp.resize(N, 0.);
-  
-  cIds.resize(N,0.);
   
   P0.resize(N, 0.);
   P1.resize(N, 0.);
@@ -147,19 +126,6 @@ void Model::SetCellNumber(unsigned new_nphases)
   com_x.resize(nphases, 0.);
   com_y.resize(nphases, 0.);
   com_z.resize(nphases, 0.);
-  
-  alphas.resize(nphases,0.);
-  zetaS_field.resize(nphases,0.);
-  zetaQ_field.resize(nphases,0.);
-  gams.resize(nphases,0.);
-  omega_ccs.resize(nphases,0.);
-  omega_cws.resize(nphases,0.);
-  xis.resize(nphases,0.);
-  kappas.resize(nphases,0.);
-  mus.resize(nphases,0.);
-  Rs.resize(nphases,0.);
-  V0.resize(nphases,0.);
-  cellTypes.resize(nphases,0.);
   
   S00.resize(nphases, 0.);
   S01.resize(nphases, 0.);

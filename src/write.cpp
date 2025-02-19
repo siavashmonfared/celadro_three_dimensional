@@ -1,20 +1,3 @@
-/*
- * This file is part of CELADRO_3D, Copyright (C) 2019-2021, Siavash Monfared
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 #include "header.hpp"
 #include "model.hpp"
 #include "files.hpp"
@@ -133,12 +116,8 @@ void Model::Write_Density(unsigned t){
 
 void Model::Write_visData(unsigned t){
     
-    field pfVis, UX, UY, UZ, cId;
+    field pfVis;
     pfVis.resize(N,0.);    
-    UX.resize(N,0.); 
-    UY.resize(N,0.); 
-    UZ.resize(N,0.); 
-    cId.resize(N,0.);
     
     for(unsigned n=nstart; n<nphases; ++n)
     {
@@ -146,10 +125,6 @@ void Model::Write_visData(unsigned t){
         for(unsigned q=0; q<patch_N; ++q){ 
         const coord GlobCoor = GetNodePosOnDomain(n,q);   
 	 pfVis[GlobCoor[1] + Size[1]*GlobCoor[0] + Size[0]*Size[1]*GlobCoor[2]]  += phi[n][q];
-	 UX[GlobCoor[1] + Size[1]*GlobCoor[0] + Size[0]*Size[1]*GlobCoor[2]]  += phi[n][q] * velocity[n][0];
-	 UY[GlobCoor[1] + Size[1]*GlobCoor[0] + Size[0]*Size[1]*GlobCoor[2]]  += phi[n][q] * velocity[n][1];
-	 UZ[GlobCoor[1] + Size[1]*GlobCoor[0] + Size[0]*Size[1]*GlobCoor[2]]  += phi[n][q] * velocity[n][2];
-	 if (phi[n][q] > 0.5) cId[GlobCoor[1] + Size[1]*GlobCoor[0] + Size[0]*Size[1]*GlobCoor[2]]  = gams[n];
         }
         
     }
@@ -157,17 +132,17 @@ void Model::Write_visData(unsigned t){
     
     FILE * sortie;
     char nomfic[256];
-    sprintf(nomfic, "tissue_%01zu.vtk", t);
+    sprintf(nomfic, "tissue_%01u.vtk", t);
     
     sortie = fopen(nomfic, "w");
     fprintf(sortie, "# vtk DataFile Version 2.0\n");
     fprintf(sortie, "volume example\n");
     fprintf(sortie, "ASCII\n");
     fprintf(sortie, "DATASET STRUCTURED_POINTS\n");    
-    fprintf(sortie, "DIMENSIONS %zu %zu %zu\n", Size[0], Size[1], Size[2]);
-    fprintf(sortie, "ASPECT_RATIO  %zu %zu %zu\n", 1, 1, 1);
-    fprintf(sortie, "ORIGIN  %zu %zu %zu\n", 0, 0, 0);    
-    fprintf(sortie, "POINT_DATA  %zu\n", N);
+    fprintf(sortie, "DIMENSIONS %u %u %u\n", Size[0], Size[1], Size[2]);
+    fprintf(sortie, "ASPECT_RATIO  %u %u %u\n", 1, 1, 1);
+    fprintf(sortie, "ORIGIN  %u %u %u\n", 0, 0, 0);    
+    fprintf(sortie, "POINT_DATA  %u\n", N);
     fprintf(sortie, "SCALARS volume_scalars double 1\n");       
     fprintf(sortie, "LOOKUP_TABLE default \n");       
     size_t ik = 0;
@@ -186,35 +161,13 @@ void Model::Write_visData(unsigned t){
     for (size_t z = 0 ; z < Size[2] ; z++) {
         for (size_t y = 0 ; y < Size[1] ; y++) {
             for (size_t x = 0 ; x < Size[0] ; x++) {
-                fprintf(sortie, " %g ", cId[ik++]);
+                fprintf(sortie, " %g ", pfVis[ik++]);
             }
         }
         fprintf(sortie,"\n");
     }
 
-    fprintf(sortie, "VECTORS Velocity float\n");
-    ik = 0;
-    for (size_t z = 0 ; z < Size[2] ; z++) {
-        for (size_t y = 0 ; y < Size[1] ; y++) {
-            for (size_t x = 0 ; x < Size[0] ; x++) {
-                	fprintf(sortie, "%.4e %.4e %.4e\n", UX[ik], UY[ik], UZ[ik]);
-                	ik++;
-            }
-        }
-    }
-    
-    /*
-    fprintf(sortie, "VECTORS StressDiag float\n");
-    ik = 0;
-    for (size_t z = 0 ; z < Size[2] ; z++) {
-        for (size_t y = 0 ; y < Size[1] ; y++) {
-            for (size_t x = 0 ; x < Size[0] ; x++) {
-                	fprintf(sortie, "%.4e %.4e %.4e\n", stress_xx[ik], stress_yy[ik], stress_zz[ik]);
-                	ik++;
-            }
-        }
-    }
-    */
+
     
     fclose(sortie);
      

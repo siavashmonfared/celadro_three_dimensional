@@ -1,20 +1,4 @@
-/*
- * This file is part of CELADRO_3D, Copyright (C) 2019-2021, Siavash Monfared
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
- 
+
 #ifndef MODEL_HPP_
 #define MODEL_HPP_
 
@@ -69,7 +53,7 @@ struct Model
   field sumQ00, sumQ01;
   /** Sum_i vol_i phi_i */
   /** Sum of square, third, and fourth powers of phi at each node */
-  field square, thirdp, fourthp, cIds;
+  field square;
   /** Phase-field for the walls and their derivatives */
   field walls, walls_dx, walls_dy, walls_dz, walls_laplace;
   /** Total polarization of the tissue */
@@ -84,19 +68,6 @@ struct Model
   std::vector<vec<double, 3>> velocity;
   /** Structure tensor */
   std::vector<double> S00, S01, S02, S12, S11, S22;
-
-  std::vector<double> gams;
-  std::vector<double> omega_ccs;
-  std::vector<double> omega_cws;
-  std::vector<double> xis;
-  std::vector<double> alphas;
-  std::vector<double> kappas;
-  std::vector<double> mus;
-  std::vector<double> Rs;
-  std::vector<double> V0;
-  std::vector<double> zetaS_field;
-  std::vector<double> zetaQ_field;
-  std::vector<double> cellTypes;
    
   /** Q-tensor */
   std::vector<double> Q00, Q01;
@@ -109,7 +80,9 @@ struct Model
   /** Polarisation total torque */
   std::vector<double> delta_theta_pol;
   /** Stress tensor */
+  // field stress_xx, stress_xy , stress_yy, stress_xz, stress_zz;
   field pressure;
+  //field tfield;
   /** Elastic torque for the nematic */
   std::vector<double> tau;
   /** Vorticity around each cell */
@@ -229,13 +202,13 @@ struct Model
   /** Elasticity */
   double gam = 0.1;
   /** Energy penalty for vol */
-  double mu = 3;
+  double mu = 50;
   /** Interface thickness */
   double lambda = 3;
   /**  Interaction stength */
-  double kappa = 0.2;
+  double kappa_cc = 0.5;
   /** Adhesion */
-  double omega = 0;
+  double omega_cc = 0.0008;
   /** Activity from shape */
   double zetaS = 0, sign_zetaS = 0;
   /** Activity from internal Q tensor */
@@ -246,15 +219,13 @@ struct Model
   double xi = 1;
   /** Prefered radii (vol = pi*R*R) and radius growth */
   double R = 8;
-  /** kij between dissimilar cell types */
-  double kij = 5.;
   
   /** Base vol: V0 = Pi*R*R */
-  // double V0;
+  double V0 = (4./3.) * Pi * R * R * R;
   /** Repuslion by the wall */
-  double wall_kappa = 0.5;
+  double kappa_cs = 0.5;
   /** Adhesion on the wall */
-  double wall_omega = 0;
+  double omega_cs = 0.002;
   /** Elasitc parameters */
   double Knem = 0, Kpol = 0;
   /** Strength of polarity / nematic tensor */
@@ -330,7 +301,7 @@ struct Model
 
   /** Add cell with number n at a certain position */
   void AddCell(unsigned n, const coord& center);
-  void AddCellMix(unsigned n, const coord& center, double zetaSi, double zetaQi, double gami, double omegai, double omega_walli, double kappai, double mui, double alphai, double xi, double Ri, double cellType);
+  void AddCellMix(unsigned n, const coord& center);
 
   /** Subfunction for AddCell() */
   void AddCellAtNode(unsigned n, unsigned q, const coord& center);
@@ -346,8 +317,6 @@ struct Model
 
   /** Write current state of the system */
   void WriteFrame(unsigned);
-  
-  /** (added by Siavash) Write phase-field for cell n */
   void Write_phi(unsigned);
   void Write_dphi(unsigned);
   void Write_COM(unsigned);
@@ -426,28 +395,6 @@ struct Model
    * in src/cuda.h.
    * */
   void QueryDeviceProperties();
-
-  /** @} */
-
-  /** Pointer to device global memory
-   *
-   * These pointers reflects the program data strcuture and represents the cor-
-   * responding data on the device global memory. All names should be identical
-   * to their host counterparts apart from the d_ prefix.
-   *
-   * @{ */
-    
-  double *d_phi, *d_phi_old, *d_V, *d_potential, *d_potential_old, *d_sum,
-         *d_square, *d_Q00, *d_Q01, *d_walls,
-         *d_walls_laplace, *d_walls_dx, *d_walls_dy, *d_walls_dz, *d_sum_cnt, *d_square_cnt,
-         *d_Q00_cnt, *d_Q01_cnt, *d_vol, *d_vol_cnt, *d_c, *d_S00, *d_S01, *d_S02, *d_S12, *d_S11, *d_S22, *d_S_order,
-         *d_S_angle, *d_theta, *d_alpha, *d_gam, *d_mu, *d_gams, *d_zetaS_field, *d_zetaQ_field, *d_cellTypes, *d_alphas,*d_omega_ccs, *d_omega_cws, *d_xis ,*d_kappas, *d_mus, *d_Rs, *d_V0;
-  vec<double, 3>  *d_vel, *d_force_p, *d_force_c, *d_force_f, *d_com, *d_com_prev;
-  stencil         *d_neighbors, *d_neighbors_patch;
-  coord           *d_patch_min, *d_patch_max, *d_offset;
-  cuDoubleComplex *d_com_x, *d_com_y, *d_com_z, *d_com_x_table, *d_com_y_table, *d_com_z_table;
-
-  /** @} */
 
   /** Random number generation
    * @{ */
@@ -593,18 +540,16 @@ struct Model
        & auto_name(lambda)
        & auto_name(nphases)
        & auto_name(init_config)
-	   & auto_name(sub_adh)
-       & auto_name(kappa)
+       & auto_name(kappa_cc)
        & auto_name(xi)
-       & auto_name(kij)
        & auto_name(R)
        & auto_name(alpha)
        & auto_name(zetaS)
        & auto_name(zetaQ)
-       & auto_name(omega)
+       & auto_name(omega_cc)
        & auto_name(wall_thickness)
-       & auto_name(wall_kappa)
-       & auto_name(wall_omega)
+       & auto_name(kappa_cs)
+       & auto_name(omega_cs)
        & auto_name(walls)
        & auto_name(patch_margin)
        & auto_name(relax_time)
@@ -641,18 +586,6 @@ struct Model
        & auto_name(S22)     
        & auto_name(Q00)
        & auto_name(Q01)
-       & auto_name(gams)
-       & auto_name(zetaS_field)
-       & auto_name(zetaQ_field)
-       & auto_name(cellTypes)
-       & auto_name(alphas)
-       & auto_name(omega_ccs)
-       & auto_name(omega_cws)
-       & auto_name(xis)
-       & auto_name(kappas)
-       & auto_name(mus)
-       & auto_name(Rs)
-       & auto_name(V0)
        & auto_name(velocity)
        & auto_name(vorticity)
        & auto_name(Fpol)

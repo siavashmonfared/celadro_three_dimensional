@@ -98,7 +98,7 @@ def VolRendering(fin,fout):
 
 
 print('running vtk_VolRender_05012021.py')
-rng = np.arange(1,101,1)
+rng = np.arange(1,301,1)
 #rng = [165,195,215,300]
 for fr in (rng):
     print('time step: ',fr,flush=True)
